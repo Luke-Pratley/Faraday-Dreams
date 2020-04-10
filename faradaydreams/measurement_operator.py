@@ -8,7 +8,7 @@ def create_fourier_matrix(lambda2, phi, lambda2_width):
     return A
 
 class Faraday_operator:
-"""
+    """
 Operator that simulates a Faraday rotation observation and finite channel width.
 
 INPUT:
@@ -17,10 +17,12 @@ INPUT:
     lambda2_width - channel widths in m^2
 
 """
-  def __init__(lambda2, phi, lambda2_width = None):
-    if(np.all(lambda2_width != None))
+
+
+def __init__(lambda2, phi, lambda2_width = None):
+    if(np.all(lambda2_width != None)):
         assert len(lambda2) == len(lambda2_width)
-    if(np.all(lambda2_width != None))
+    if(np.all(lambda2_width != None)):
         A = create_fourier_matrix(lambda2, phi, lambda2_width)
     else:
         A = create_fourier_matrix(lambda2, phi, lambda2 * 0.)
