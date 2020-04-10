@@ -4,7 +4,7 @@ import optimusprimal.primal_dual as primal_dual
 import numpy as np
 
 
-def constrined_solver(data, sigma, phi, psi, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}):
+def constrained_solver(data, sigma, phi, psi, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}):
     """
     Solve constrained l1 regularization problem
     """
@@ -16,7 +16,7 @@ def constrined_solver(data, sigma, phi, psi, beta = 1e-3, options = {'tol': 1e-5
     return primal_dual.FBPD(phi.adj_op(data), options, None, h, p, None)
 
 
-def unconstrined_solver(data, sigma, phi, psi, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}):
+def unconstrained_solver(data, sigma, phi, psi, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False}):
     """
     Solve unconstrained l1 regularization problem
     """
