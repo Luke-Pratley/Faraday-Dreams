@@ -1,0 +1,30 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+def plot_simulation_spectrum(fname, lambda1, y_true, y, sigma, m_op, phi, x_true, solution, rm_max):
+    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(10, 10), dpi=80)
+    ax[0].errorbar(lambda1, np.real(y), yerr=sigma/np.sqrt(2.))
+    ax[0].plot(lambda1, np.real(m_op.dir_op(solution)))
+    ax[0].plot(lambda1, np.real(y_true))
+    ax[0].errorbar(lambda1, np.imag(y), yerr=sigma/np.sqrt(2.))
+    ax[0].plot(lambda1, np.imag(m_op.dir_op(solution)))
+    ax[0].plot(lambda1, np.imag(y_true))
+    ax[0].set_xlabel(r"$\lambda$ (m)")
+    ax[0].set_ylabel(r"(Jy)")
+    ax[0].legend(["Measured Q", "Q Solution", "Q True", "Measured U", "U Solution", "U True"])
+    ax[1].plot(phi, np.abs(m_op.adj_op(y)) * 1./len(y))
+    ax[1].plot(phi, np.abs(x_true))
+    ax[1].plot(phi, np.abs(solution))
+    ax[1].legend(["Dirty | |", "True | |", "Solution | |"])
+    ax[1].set_xlabel(r"$\phi$ (rad/m$^2$)")
+    ax[1].set_ylabel(r"(Jy /m^2)")
+    ax[1].set_xlim([-rm_max, rm_max])
+    ax[2].plot(phi, np.abs(m_op.adj_op(y - m_op.dir_op(solution))) * 1./len(y))
+    ax[2].plot(phi, np.abs(m_op.adj_op(y - y_true)) * 1./len(y))
+    ax[2].legend(["Residuals | |", "Noise | |"])
+    ax[2].set_xlabel(r"$\phi$ (rad/m$^2$)")
+    ax[2].set_ylabel(r"(Jy m^2/rad)")
+    ax[2].set_xlim([-rm_max, rm_max])
+    SNR = np.log10(np.sqrt(np.sum(np.abs(x_true)**2))/np.sqrt(np.sum(np.abs(x_true - solution)**2))) * 20.
+    ax[0].set_title("SNR = " + str(SNR))
+    plt.savefig(fname)
