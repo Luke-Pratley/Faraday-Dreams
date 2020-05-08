@@ -1,4 +1,5 @@
 import emcee
+from scipy.optimize import minimize
 import numpy as np
 
 
@@ -12,3 +13,7 @@ def mcmc_sample(channels, y, sigma, start_params, log_probability, nwalkers, ite
     sampler.run_mcmc(start_params + 1e-4 * np.random.randn(nwalkers, ndim), iters, progress=True)
 
 
+def least_squares(params_estimate, model, channels, y, sigma):
+    nll = lambda *args: -log_likelihood(*args)
+    initial = params_estimate
+    return minimize(nll, initial, args=(channels, y, sigma))
