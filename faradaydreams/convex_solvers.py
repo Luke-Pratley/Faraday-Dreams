@@ -22,10 +22,10 @@ def solver(algo, measurements, sigma, phi, wav=["dirac, db1, db2, db3, db4"], le
     estimate = phi.adj_op(measurements)
     psi = linear_operators.dictionary(wav, levels, estimate.shape)
     if algo == algorithm.l1_constrained:
-        logger.info("Denosing using constrained l1 regularization")
+        logger.info("Reconstructing Faraday Depth using constrained l1 regularization")
         return l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm, beta, options)
     if algo == algorithm.l1_unconstrained:
-        logger.info("Denosing using unconstrained l1 regularization")
+        logger.info("Reconstructing Faraday Depth using unconstrained l1 regularization")
         return l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_norm, beta, options)
     raise ValueError("Algorithm not reconginized.")
 
