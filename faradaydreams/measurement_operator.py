@@ -39,7 +39,7 @@ def phi_parameters(lambda2, lambda2_width):
     dphi = 1./np.max(lambda2)
     phi_max = np.max(np.abs(1./lambda2_width))
     phi_min = np.min(np.abs(1./lambda2_width))
-    logger.info("Phi resolution %s rad/m^2.", dphi) 
-    logger.info("phi max range is %s rad/m^2.", phi_max)
-    logger.info("phi min range is %s rad/m^2.", phi_min)
+    logger.info("\u03C6 resolution %s rad/m^2.", dphi) 
+    logger.info("\u03C6 max range is %s rad/m^2.", phi_max)
+    logger.info("\u03C6 min range is %s rad/m^2.", phi_min)
     return phi_max, phi_min, dphi
