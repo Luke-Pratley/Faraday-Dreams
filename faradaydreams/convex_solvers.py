@@ -51,5 +51,5 @@ def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_no
         h = None
     else:
         h = prox_operators.l1_norm(beta, psi)
-    return primal_dual.FBPD(estimate, options, None, h, None, g)
+    return primal_dual.FBPD(estimate, options, g, h, None)
 
