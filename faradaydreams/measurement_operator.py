@@ -9,7 +9,7 @@ logger = logging.getLogger('Faraday Dreams')
 def create_fourier_matrix(lambda2, phi, lambda2_width, weights):
     A = np.zeros((len(lambda2), len(phi)), dtype=np.complex)
     for r in range(len(lambda2)):
-        A[r, :] = np.exp(2 * lambda2[r] * phi * 1j) * np.sinc(2. * phi * lambda2_width[r]/np.pi) * weights[r]
+        A[r, :] = np.exp(2 * lambda2[r] * phi * 1j) * np.sinc(phi * lambda2_width[r]/np.pi) * weights[r]
     return A
 
 class faraday_operator:
