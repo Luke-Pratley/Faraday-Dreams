@@ -37,8 +37,8 @@ def l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm
     epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
     p = prox_operators.l2_ball(epsilon, measurements, phi)
     p.beta = operator_norm
-    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(estimate))) * beta, psi)
-    return primal_dual.FBPD(estimate, options, None, h, p, None)
+    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(estimate)))) * beta, psi)
+    return primal_dual.FBPD(estimate, options, None, None, h, p)
 
 def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_norm = 1, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
     """
@@ -53,3 +53,13 @@ def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_no
         h = prox_operators.l1_norm(beta, psi)
     return primal_dual.FBPD(estimate, options, g, h, None)
 
+def l1_constrained_stokes_solver(estimate, measurements, sigma, phi, psi, operator_norm = 1, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
+    """
+    Solve constrained l1 regularization problem
+    """
+    size = len(np.ravel(measurements))
+    epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
+    p = prox_operators.l2_ball(epsilon, measurements, phi)
+    p.beta = operator_norm
+    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(estimate)))) * beta, linear_operators.projection(psi, 0, estimate.shape))
+    return primal_dual.FBPD(estimate, options, None, None, h, p)

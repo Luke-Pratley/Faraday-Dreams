@@ -27,5 +27,15 @@ def deltas(phi, Ps, phi0s, chi0s):
 def from_analytic_lambda2(QUlambda2_function, phi, a, b):
     result = phi * 0j
     for i in range(len(phi)):
-        result[i] = integrate.quad(lambda lambda2: QUlambda2_function(lambda2) * np.exp(-2 * lambda2 * phi[i])/(2 * np.pi), a, b)
+        result[i] = integrate.quad(lambda lambda2: np.real(QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i])/(2 * np.pi)), a, b, limit=50)[
+            0] + 1j * integrate.quad(lambda lambda2: np.imag(QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i])/(2 * np.pi)), a, b, limit=50)[0]
+
     return result
+
+
+def from_fft_lambda2(QUlambda2_function, phi):
+    lambda2 = np.fft.fftfreq(len(phi), d=np.abs(phi[0] - phi[1]))
+    p = QUlambda2_function(lambda2)
+    p[lambda2 <= 0] = 0
+    p[np.isnan(p)]=0
+    return np.fft.fft(np.fft.ifftshift(p))/len(lambda2)
