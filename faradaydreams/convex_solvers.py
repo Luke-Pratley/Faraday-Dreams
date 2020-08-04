@@ -16,20 +16,25 @@ class algorithm(Enum):
 
 logger = logging.getLogger('Faraday Dreams')
 
-def solver(algo, measurements, sigma, phi, wav=["dirac, db1, db2, db3, db4"], levels=6, operator_norm = 1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, "positivity": False}):
+
+def solver(algo, measurements, sigma, phi, wav=["dirac, db1, db2, db3, db4"], levels=6, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, "positivity": False, 'real': False, 'project_positive_lambda2': True}):
     logger.info("Using wavelets %s with %s levels", wav, levels)
-    logger.info("Using an estimated noise level of %s (weighted image units, i.e. Jy/Beam)", sigma)
+    logger.info(
+        "Using an estimated noise level of %s (weighted image units, i.e. Jy/Beam)", sigma)
     estimate = phi.adj_op(measurements)
     psi = linear_operators.dictionary(wav, levels, estimate.shape)
     if algo == algorithm.l1_constrained:
-        logger.info("Reconstructing Faraday Depth using constrained l1 regularization")
+        logger.info(
+            "Reconstructing Faraday Depth using constrained l1 regularization")
         return l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm, beta, options)
     if algo == algorithm.l1_unconstrained:
-        logger.info("Reconstructing Faraday Depth using unconstrained l1 regularization")
+        logger.info(
+            "Reconstructing Faraday Depth using unconstrained l1 regularization")
         return l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_norm, beta, options)
     raise ValueError("Algorithm not reconginized.")
 
-def l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm = 1, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
+
+def l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False, 'real': False, 'project_positive_lambda2': True}):
     """
     Solve constrained l1 regularization problem
     """
@@ -37,10 +42,22 @@ def l1_constrained_solver(estimate, measurements, sigma, phi, psi, operator_norm
     epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
     p = prox_operators.l2_ball(epsilon, measurements, phi)
     p.beta = operator_norm
-    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(estimate)))) * beta, psi)
-    return primal_dual.FBPD(estimate, options, None, None, h, p)
+    h = prox_operators.l1_norm(
+        np.max(np.abs(psi.dir_op(estimate))) * beta, psi)
+    f = None
+    if options['real'] == True:
+        if options["positivity"] == True:
+            f = prox_operators.positive_prox()
+        else:
+            f = prox_operators.real_prox()
+    r = None
+    if options['project_positive_lambda2'] == True:
+        r = prox_operators.zero_prox(
+            np.arange(1, int(len(estimate) * 1./2.)), linear_operators.fft_operator())
+    return primal_dual.FBPD(estimate, options, None, f, h, p, r)
 
-def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_norm = 1, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
+
+def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
     """
     Solve unconstrained l1 regularization problem
     """
@@ -51,9 +68,16 @@ def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_no
         h = None
     else:
         h = prox_operators.l1_norm(beta, psi)
-    return primal_dual.FBPD(estimate, options, g, h, None)
+    f = None
+    if options['real'] == True:
+        if options["positivity"] == True:
+            f = prox_operators.positive_prox()
+        else:
+            f = prox_operators.real_prox()
+    return primal_dual.FBPD(estimate, options, g, f, h, None)
 
-def l1_constrained_stokes_solver(estimate, measurements, sigma, phi, psi, operator_norm = 1, beta = 1e-3, options = {'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
+
+def l1_constrained_stokes_solver(estimate, measurements, sigma, phi, psi, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
     """
     Solve constrained l1 regularization problem
     """
@@ -61,5 +85,12 @@ def l1_constrained_stokes_solver(estimate, measurements, sigma, phi, psi, operat
     epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
     p = prox_operators.l2_ball(epsilon, measurements, phi)
     p.beta = operator_norm
-    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(estimate)))) * beta, linear_operators.projection(psi, 0, estimate.shape))
-    return primal_dual.FBPD(estimate, options, None, None, h, p)
+    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(
+        estimate)))) * beta, linear_operators.projection(psi, 0, estimate.shape))
+    f = None
+    if options['real'] == True:
+        if options["positivity"] == True:
+            f = prox_operators.positive_prox()
+        else:
+            f = prox_operators.real_prox()
+    return primal_dual.FBPD(estimate, options, None, f, h, p)

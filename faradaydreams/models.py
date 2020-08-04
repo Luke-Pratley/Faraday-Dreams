@@ -33,9 +33,10 @@ def from_analytic_lambda2(QUlambda2_function, phi, a, b):
     return result
 
 
-def from_fft_lambda2(QUlambda2_function, phi):
-    lambda2 = np.fft.fftfreq(len(phi), d=np.abs(phi[0] - phi[1]))
-    p = QUlambda2_function(lambda2)
-    p[lambda2 <= 0] = 0
-    p[np.isnan(p)]=0
-    return np.fft.fft(np.fft.ifftshift(p))/len(lambda2)
+def from_fft_lambda2(QUlambda2_function, phi, start_lambda=0):
+    lambda2 = np.fft.fftfreq(len(phi), d=np.abs(phi[0] - phi[1])) * np.pi
+    #lambda2 = np.fft.fftshift(lambda2)
+    p = np.zeros((len(lambda2)), dtype=complex)
+    p[lambda2 > start_lambda] = QUlambda2_function(
+        lambda2[lambda2 > start_lambda])
+    return np.fft.fftshift(np.fft.fft(p))

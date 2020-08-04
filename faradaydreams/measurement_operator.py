@@ -46,18 +46,18 @@ INPUT:
 
 
 class delay_operator:
-
-
     """
     Transform from delay to frequency
     """
-
-
-    def __init__(self, nu, tau, weights):
+    def __init__(self, nu, tau, weights, real_constraint = False):
         A = create_delay_matrix(nu, tau, weights)
         A_H = np.conj(A.T)
-        self.dir_op = lambda x: A @ x
-        self.adj_op = lambda x: A_H @ x
+        if real_constraint:
+            self.dir_op = lambda x: np.real(A @ x)
+            self.adj_op = lambda x: A_H @ np.real(x)
+        else:
+            self.dir_op = lambda x: A @ x
+            self.adj_op = lambda x: A_H @ x
 
 
 class stokes_operator:
