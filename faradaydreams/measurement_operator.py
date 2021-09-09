@@ -157,7 +157,7 @@ class stokes_operator:
 
 
 def phi_parameters(lambda2, lambda2_width):
-    dphi = 1./np.max(lambda2)
+    dphi = 1./np.max(lambda2) * np.pi/2.
     phi_max = np.max(np.abs(1./lambda2_width))
     phi_min = np.min(np.abs(1./lambda2_width))
     logger.info("\u03C6 resolution %s rad/m^2.", dphi)
