@@ -17,11 +17,12 @@ class algorithm(Enum):
 logger = logging.getLogger('Faraday Dreams')
 
 
-def solver(algo, measurements, sigma, phi, wav=["dirac, db1, db2, db3, db4"], levels=6, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, "positivity": False, 'real': False, 'project_positive_lambda2': True}, viewer=None):
+def solver(algo, measurements, sigma, phi, wav=["dirac, db1, db2, db3, db4"], levels=6, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, "positivity": False, 'real': False, 'project_positive_lambda2': True}, viewer=None, estimate=None):
     logger.info("Using wavelets %s with %s levels", wav, levels)
     logger.info(
         "Using an estimated noise level of %s (weighted image units, i.e. Jy/Beam)", sigma)
-    estimate = phi.adj_op(measurements)/operator_norm
+    if estimate is None:
+        estimate = phi.adj_op(measurements)/operator_norm
     psi = linear_operators.dictionary(wav, levels, estimate.shape)
     if algo == algorithm.l1_constrained:
         logger.info(
