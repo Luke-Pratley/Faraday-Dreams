@@ -83,21 +83,3 @@ def l1_unconstrained_solver(estimate, measurements, sigma, phi, psi, operator_no
             f = prox_operators.real_prox()
     return primal_dual.FBPD(estimate, options, g, f, h, None, viewer)
 
-
-def l1_constrained_stokes_solver(estimate, measurements, sigma, phi, psi, operator_norm=1, beta=1e-3, options={'tol': 1e-5, 'iter': 5000, 'update_iter': 50, 'record_iters': False, 'positivity': False, 'real': False}):
-    """
-    Solve constrained l1 regularization problem
-    """
-    size = len(np.ravel(measurements))
-    epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
-    p = prox_operators.l2_ball(epsilon, measurements, phi)
-    p.beta = operator_norm
-    h = prox_operators.l1_norm(np.max(np.abs(psi.dir_op(phi.dir_op(
-        estimate)))) * beta, linear_operators.projection(psi, 0, estimate.shape))
-    f = None
-    if options['real'] == True:
-        if options["positivity"] == True:
-            f = prox_operators.positive_prox()
-        else:
-            f = prox_operators.real_prox()
-    return primal_dual.FBPD(estimate, options, None, f, h, p)
