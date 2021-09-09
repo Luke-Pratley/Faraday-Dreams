@@ -1,5 +1,5 @@
 # Faraday-Dreams
-(need to add test coverage and build CI)
+
 New developments that allow correction for channel averaging when reconstructing broad band polarimetric signals.
 
 
