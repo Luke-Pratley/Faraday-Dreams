@@ -6,6 +6,6 @@ New developments that allow correction for channel averaging when reconstructing
 This code is built using [Optimus Primal](https://github.com/Luke-Pratley/Optimus-Primal) to apply convex optimization algorithms in deniosing.
 
 ## Requirements
-- Python 3.6
+- Python 3.8
 - [Optimus Primal](https://github.com/Luke-Pratley/Optimus-Primal)
 - Matplotlib
