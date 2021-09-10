@@ -37,6 +37,8 @@ class faraday_operator:
         phi - pixel locations in rad/m^2
         weights - weights for each channel in m^2
         lambda2_width - channel widths in m^2
+        spectral_axis - axis number for performing the calculation
+        nufft - to use NUFFT algorithm over matrix operation
 
     """
     def __init__(self,
