@@ -21,4 +21,4 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
-    install_requires=['numpy', 'scipy', 'PyWavelets', 'optimusprimal'])
+    install_requires=['numpy', 'scipy', 'PyWavelets', 'optimusprimal', 'pynufft'])
