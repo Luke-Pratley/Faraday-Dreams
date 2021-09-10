@@ -1,0 +1,36 @@
+jobs:
+  include:
+    - language: python
+      python:
+        - "3.8"
+      install:
+        - pip install pywavelets optimusprimal pytest
+        - python setup.py build
+        - python setup.py install
+      script: pytest -v tests/*.py
+
+    - name: codecov
+      language: python
+      python:
+        - "3.8"
+      install:
+        - pip install pytest-cov codecov
+        - pip install pywavelets pytest 
+        - python setup.py build
+        - python setup.py install
+      script: 
+        - py.test tests/*.py  --cov-report term --cov=faradaydreams --collect-only 
+      # Push the results back to codecov
+      after_success:
+        - codecov
+    
+    - name: lint-check
+      language: python
+      python:
+        - "3.8"
+      install:
+        - pip install --upgrade autopep8
+      script: 
+        - autopep8 --in-place --aggressive --aggressive faradaydreams/*.py
+        - git diff
+        - if [[ -z "git status --porcelain" ]]; then return 1; fi;
