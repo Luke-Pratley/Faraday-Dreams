@@ -33,7 +33,7 @@ def solver(
             'record_iters': False,
             "positivity": False,
             'real': False,
-            'project_positive_lambda2': True
+            'project_positive_lambda2': False
         },
         viewer=None,
         estimate=None):
@@ -76,7 +76,8 @@ def l1_constrained_solver(
             'real': False,
             'project_positive_lambda2': True
         },
-        viewer=None):
+        viewer=None,
+        spectral_axis=-1):
     """
     Solve constrained l1 regularization problem
     """
@@ -99,10 +100,10 @@ def l1_constrained_solver(
         mask[negative_l, ...] = True
 
         def fft_dir(x):
-            return np.fft.fft(x, axis=0)
+            return np.fft.fft(x, axis=spectral_axis)
 
         def fft_adj(x):
-            return np.fft.ifft(x, axis=0)
+            return np.fft.ifft(x, axis=spectral_axis)
 
         r = prox_operators.zero_prox(
             mask, linear_operators.function_wrapper(fft_dir, fft_adj))
@@ -125,7 +126,8 @@ def l1_unconstrained_solver(
             'positivity': False,
             'real': False
         },
-        viewer=None):
+        viewer=None,
+        spectral_axis=-1):
     """
     Solve unconstrained l1 regularization problem
     """
@@ -142,4 +144,17 @@ def l1_unconstrained_solver(
             f = prox_operators.positive_prox()
         else:
             f = prox_operators.real_prox()
-    return primal_dual.FBPD(estimate, options, g, f, h, None, viewer)
+    if options['project_positive_lambda2'] == True:
+        negative_l = np.arange(1, int(estimate.shape[0] * 1. / 2.))
+        mask = np.zeros(estimate.shape, dtype=bool)
+        mask[negative_l, ...] = True
+
+        def fft_dir(x):
+            return np.fft.fft(x, axis=spectral_axis)
+
+        def fft_adj(x):
+            return np.fft.ifft(x, axis=spectral_axis)
+
+        r = prox_operators.zero_prox(
+            mask, linear_operators.function_wrapper(fft_dir, fft_adj))
+    return primal_dual.FBPD(estimate, options, g, f, h, r, viewer)
