@@ -1,5 +1,7 @@
 # Faraday-Dreams
 
+[![Build Status](https://app.travis-ci.com/Luke-Pratley/Faraday-Dreams.svg?branch=master)](https://app.travis-ci.com/Luke-Pratley/Faraday-Dreams)
+
 New developments that allow correction for channel averaging when reconstructing broad band polarimetric signals.
 
 
