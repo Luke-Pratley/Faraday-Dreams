@@ -41,3 +41,10 @@ def test_faraday_operator():
     expected = np.exp(2j * lambda2 * phi[9])
     assert(np.allclose(output1, expected, 1e-3))
     assert(np.allclose(output2, expected, 1e-3))
+
+    dir_inp = np.zeros((10, phi.shape[0]))
+    dir_inp[:, 8] = 1
+    output1 = matrix_op.dir_op(dir_inp)
+    output2 = nufft_op.dir_op(dir_inp)
+    assert(np.allclose(output1, 1., 1e-2))
+    assert(np.allclose(output2, 1., 1e-2))
