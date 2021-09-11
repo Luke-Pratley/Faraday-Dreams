@@ -11,4 +11,4 @@ This code is built using [Optimus Primal](https://github.com/Luke-Pratley/Optimu
 ## Requirements
 - Python 3.8
 - [Optimus Primal](https://github.com/Luke-Pratley/Optimus-Primal)
-- PyNUFFT for using the NUFFT feature
+- [PyNUFFT](https://github.com/jyhmiinlin/pynufft) when using the NUFFT algorithm
