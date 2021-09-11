@@ -1,7 +1,13 @@
 import numpy as np
+import optimusprimal.linear_operators as linear_operators
 import logging
 
 logger = logging.getLogger('Faraday Dreams')
+
+
+def power_method(m_op, tol=1e-4):
+    nu, sol = linear_operators.power_method(m_op, np.ones((m_op.cols)), tol)
+    return nu
 
 
 def create_faraday_matrix(lambda2, phi, lambda2_width, weights):
@@ -49,6 +55,8 @@ class faraday_operator:
                  spectral_axis=-1,
                  nufft=False):
         self.spectral_axis = spectral_axis
+        self.rows = len(lambda2)
+        self.cols = len(phi)
         if nufft == False:
             if (np.all(lambda2_width != None)):
                 assert lambda2.shape == lambda2_width.shape
@@ -67,7 +75,7 @@ class faraday_operator:
             nufft.plan(-lambda2.reshape((len(lambda2), 1)) * dphi * 2, (Nd, ),
                        (Kd, ), (Jd, ))
             self.dir_op_1d = lambda x: nufft.forward(x) * weights
-            self.adj_op_1d = lambda x: nufft.adjoint(x * np.adj(weights))
+            self.adj_op_1d = lambda x: nufft.adjoint(x * np.conj(weights))
 
     def wrap_matrix(self, A):
         """Takes the Fourier matrix and wraps it into a lambda"""

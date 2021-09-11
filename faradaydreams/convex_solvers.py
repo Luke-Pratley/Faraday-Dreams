@@ -22,7 +22,7 @@ def solver(
         measurements,
         sigma,
         phi,
-        wav=["dirac, db1, db2, db3, db4"],
+        wav=["dirac", "db1", "db2", "db3", "db4"],
         levels=6,
         operator_norm=1,
         beta=1e-3,
@@ -36,7 +36,8 @@ def solver(
             'project_positive_lambda2': False
         },
         viewer=None,
-        estimate=None):
+        estimate=None,
+        spectral_axis=-1):
     logger.info("Using wavelets %s with %s levels", wav, levels)
     logger.info(
         "Using an estimated noise level of %s (weighted image units, i.e. Jy/Beam)",
@@ -48,13 +49,13 @@ def solver(
         logger.info(
             "Reconstructing Faraday Depth using constrained l1 regularization")
         return l1_constrained_solver(estimate, measurements, sigma, phi, psi,
-                                     operator_norm, beta, options, viewer)
+                                     operator_norm, beta, options, viewer, spectral_axis)
     if algo == algorithm.l1_unconstrained:
         logger.info(
             "Reconstructing Faraday Depth using unconstrained l1 regularization"
         )
         return l1_unconstrained_solver(estimate, measurements, sigma, phi, psi,
-                                       operator_norm, beta, options, viewer)
+                                       operator_norm, beta, options, viewer, spectral_axis)
     raise ValueError("Algorithm not reconginized.")
 
 
@@ -73,8 +74,7 @@ def l1_constrained_solver(
             'record_iters': False,
             'positivity': False,
             'real': False,
-            'real': False,
-            'project_positive_lambda2': True
+            'project_positive_lambda2': False
         },
         viewer=None,
         spectral_axis=-1):
@@ -124,7 +124,8 @@ def l1_unconstrained_solver(
             'update_iter': 50,
             'record_iters': False,
             'positivity': False,
-            'real': False
+            'real': False,
+            'project_positive_lambda2': False
         },
         viewer=None,
         spectral_axis=-1):
