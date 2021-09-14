@@ -69,7 +69,7 @@ class faraday_operator:
             from pynufft import NUFFT
             nufft = NUFFT()
             Nd = phi.shape[0]
-            Jd = 16
+            Jd = 7
             Kd = Nd * 2
             dphi = np.abs(phi[0] - phi[1])
             nufft.plan(-lambda2.reshape((len(lambda2), 1)) * dphi * 2, (Nd, ),
@@ -105,3 +105,7 @@ def phi_parameters(lambda2, lambda2_width):
 
 def create_phi_array(Nd, dphi):
     return np.linspace(-Nd * dphi / 2, Nd * dphi / 2, Nd, endpoint=False)
+
+
+def create_lambda2_array(Nd, dphi):
+    return np.fft.fftshift(np.fft.fftfreq(Nd, dphi) * np.pi)

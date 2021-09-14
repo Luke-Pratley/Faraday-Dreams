@@ -39,4 +39,4 @@ def from_fft_lambda2(QUlambda2_function, phi, start_lambda=0):
     p = np.zeros((len(lambda2)), dtype=complex)
     p[lambda2 > start_lambda] = QUlambda2_function(
         lambda2[lambda2 > start_lambda])
-    return np.fft.fftshift(np.fft.fft(p))
+    return np.fft.ifftshift(np.fft.fft(p))

@@ -21,9 +21,9 @@ def solver(
         algo,
         measurements,
         sigma,
-        phi,
-        wav=["dirac", "db1", "db2", "db3", "db4"],
-        levels=6,
+        m_op,
+        wav=["dirac"],
+        levels=3,
         operator_norm=1,
         beta=1e-3,
         options={
@@ -40,21 +40,20 @@ def solver(
         spectral_axis=-1):
     logger.info("Using wavelets %s with %s levels", wav, levels)
     logger.info(
-        "Using an estimated noise level of %s (weighted image units, i.e. Jy/Beam)",
-        sigma)
+        f"Using an estimated noise level of {sigma} (Jy)")
     if estimate is None:
-        estimate = phi.adj_op(measurements) / operator_norm
+        estimate = m_op.adj_op(measurements) / operator_norm
     psi = linear_operators.dictionary(wav, levels, estimate.shape)
     if algo == algorithm.l1_constrained:
         logger.info(
             "Reconstructing Faraday Depth using constrained l1 regularization")
-        return l1_constrained_solver(estimate, measurements, sigma, phi, psi,
+        return l1_constrained_solver(estimate, measurements, sigma, m_op, psi,
                                      operator_norm, beta, options, viewer, spectral_axis)
     if algo == algorithm.l1_unconstrained:
         logger.info(
             "Reconstructing Faraday Depth using unconstrained l1 regularization"
         )
-        return l1_unconstrained_solver(estimate, measurements, sigma, phi, psi,
+        return l1_unconstrained_solver(estimate, measurements, sigma, m_op, psi,
                                        operator_norm, beta, options, viewer, spectral_axis)
     raise ValueError("Algorithm not reconginized.")
 
@@ -63,7 +62,7 @@ def l1_constrained_solver(
         estimate,
         measurements,
         sigma,
-        phi,
+        m_op,
         psi,
         operator_norm=1,
         beta=1e-3,
@@ -83,7 +82,7 @@ def l1_constrained_solver(
     """
     size = len(np.ravel(measurements))
     epsilon = np.sqrt(size + 2 * np.sqrt(2 * size)) * sigma
-    p = prox_operators.l2_ball(epsilon, measurements, phi)
+    p = prox_operators.l2_ball(epsilon, measurements, m_op)
     p.beta = operator_norm
     h = prox_operators.l1_norm(
         np.max(np.abs(psi.dir_op(estimate))) * beta, psi)
@@ -114,7 +113,7 @@ def l1_unconstrained_solver(
         estimate,
         measurements,
         sigma,
-        phi,
+        m_op,
         psi,
         operator_norm=1,
         beta=1e-3,
@@ -133,7 +132,7 @@ def l1_unconstrained_solver(
     Solve unconstrained l1 regularization problem
     """
 
-    g = grad_operators.l2_norm(sigma, measurements, phi)
+    g = grad_operators.l2_norm(sigma, measurements, m_op)
     g.beta = operator_norm / sigma**2
     if beta <= 0:
         h = None
