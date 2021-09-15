@@ -11,7 +11,7 @@ This code is built using [Optimus Primal](https://github.com/Luke-Pratley/Optimu
 ## Requirements
 - Python 3.8
 - [Optimus Primal](https://github.com/Luke-Pratley/Optimus-Primal)
-- [PyNUFFT](https://github.com/jyhmiinlin/pynufft) when using the NUFFT algorithm
+- [PyNUFFT](https://github.com/jyhmiinlin/pynufft) when using the NUFFT algorithm (Optional)
 
 ## Related Publications
 - Removing non-physical structure in fitted Faraday rotated signals: non-parametric QU-fitting, PASA (Submitted), L. Pratley and M. Johnston-Hollitt, 2021
