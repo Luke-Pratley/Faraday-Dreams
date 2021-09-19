@@ -31,8 +31,6 @@ def solver(
             'iter': 5000,
             'update_iter': 50,
             'record_iters': False,
-            "positivity": False,
-            'real': False,
             'project_positive_lambda2': False
         },
         viewer=None,
@@ -71,8 +69,6 @@ def l1_constrained_solver(
             'iter': 5000,
             'update_iter': 50,
             'record_iters': False,
-            'positivity': False,
-            'real': False,
             'project_positive_lambda2': False
         },
         viewer=None,
@@ -87,11 +83,6 @@ def l1_constrained_solver(
     h = prox_operators.l1_norm(
         np.max(np.abs(psi.dir_op(estimate))) * beta, psi)
     f = None
-    if options['real'] == True:
-        if options["positivity"] == True:
-            f = prox_operators.positive_prox()
-        else:
-            f = prox_operators.real_prox()
     r = None
     if options['project_positive_lambda2'] == True:
         negative_l = np.arange(1, int(estimate.shape[0] * 1. / 2.))
@@ -122,8 +113,6 @@ def l1_unconstrained_solver(
             'iter': 5000,
             'update_iter': 50,
             'record_iters': False,
-            'positivity': False,
-            'real': False,
             'project_positive_lambda2': False
         },
         viewer=None,
@@ -139,11 +128,6 @@ def l1_unconstrained_solver(
     else:
         h = prox_operators.l1_norm(beta, psi)
     f = None
-    if options['real'] == True:
-        if options["positivity"] == True:
-            f = prox_operators.positive_prox()
-        else:
-            f = prox_operators.real_prox()
     if options['project_positive_lambda2'] == True:
         negative_l = np.arange(1, int(estimate.shape[0] * 1. / 2.))
         mask = np.zeros(estimate.shape, dtype=bool)

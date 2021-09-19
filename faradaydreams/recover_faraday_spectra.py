@@ -71,6 +71,7 @@ def recover_1d_faraday_spectrum(
         "y_solution": y_model,
         "solution_lambda2": model_lambda2,
         "measurements": y,
+        "measurements_residuals": y - m_op.dir_op(solution) / weights,
         "measurements_lambda2": lambda2,
         "measurements_weights": weights,
         "measurements_sigma": sigma
