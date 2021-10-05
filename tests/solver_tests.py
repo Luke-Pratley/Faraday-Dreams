@@ -4,6 +4,8 @@ import numpy as np
 import faradaydreams.measurement_operator
 import faradaydreams.convex_solvers
 
+np.random.seed(42)
+
 
 def test_constrained():
 

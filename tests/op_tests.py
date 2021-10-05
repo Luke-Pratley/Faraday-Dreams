@@ -49,6 +49,15 @@ def test_faraday_operator():
     output2 = nufft_op.dir_op(dir_inp)
     assert(np.allclose(output1, 1., 1e-3))
     assert(np.allclose(output2, 1., 1e-3))
+    
+    adj_inp = np.ones((lambda2.shape[0]))
+    
+    output1 = matrix_op.adj_op(adj_inp)
+    output2 = nufft_op.adj_op(adj_inp)
+    expected = np.sum(np.exp(-2j * lambda2[:, None] * phi[None, :]),axis=0)
+    norm = np.mean(output2/expected)
+    assert(np.allclose(output1, expected, 1e-3))
+    assert(np.allclose(output2, expected, 1e-3))
 
 def test_power_method():
     lambda2 = np.linspace(0, 6, 20)
