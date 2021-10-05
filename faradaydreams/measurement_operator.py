@@ -75,7 +75,7 @@ class faraday_operator:
             nufft.plan(-lambda2.reshape((len(lambda2), 1)) * dphi * 2, (Nd, ),
                        (Kd, ), (Jd, ))
             self.dir_op_1d = lambda x: nufft.forward(x) * weights
-            self.adj_op_1d = lambda x: nufft.adjoint(x * np.conj(weights))
+            self.adj_op_1d = lambda x: nufft.adjoint(x * np.conj(weights)) * Kd
 
     def wrap_matrix(self, A):
         """Takes the Fourier matrix and wraps it into a lambda"""

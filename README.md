@@ -14,8 +14,8 @@ This code is built using [Optimus Primal](https://github.com/Luke-Pratley/Optimu
 - [PyNUFFT](https://github.com/jyhmiinlin/pynufft) when using the NUFFT algorithm (Optional)
 
 ## Related Publications
-- Removing non-physical structure in fitted Faraday rotated signals: non-parametric QU-fitting, PASA (Submitted), L. Pratley and M. Johnston-Hollitt, 2021
-- [Wide-band Rotation Measure Synthesis](https://ui.adsabs.harvard.edu/abs/2020ApJ...894...38P/abstract), ApJ, L. Pratley, M. Johnston-Hollitt, and B. M. Gaensler, 2020
+- Removing non-physical structure in fitted Faraday rotated signals: non-parametric QU-fitting, PASA (Submitted), L. Pratley and M. Johnston-Hollitt, and B. M. Gaensler, 2021
+- [Wide-band Rotation Measure Synthesis](https://ui.adsabs.harvard.edu/abs/2020ApJ...894...38P/abstract), ApJ, L. Pratley, M. Johnston-Hollitt, 2020
 
 ## Basic example for 1d spectrum
 We can import a simple solver using the following command
@@ -72,3 +72,4 @@ The returned dictionary has the form
 where we can plot the solution `results['solution']` against `results['phi']`. `results['y_solution']` is the same signal in lambda^2 coordinates `results['solution_lambda2']`. The original measurements `results['measurements']` and the residuals of the solution `results['measurements_residuals']` are also returned. 
 
 Look in the examples directory for a fully working example in the form of a python notebook.
+
