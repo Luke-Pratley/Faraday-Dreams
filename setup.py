@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="faradaydreams",
-    version="0.0.1",
+    version="0.0.2",
     author="Luke Pratley",
     author_email="luke.pratley@gmail.com",
     description="Faraday Rotation Recovery using Convex Optimization",
