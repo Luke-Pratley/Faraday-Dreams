@@ -1,4 +1,5 @@
 ignore:
   - "examples/"
   - "data/"
-  - "faradaydreams/models.py"         # glob accepted
+  - "faradaydreams/models.py"       
+  - "faradaydreams/recover_1d_spectra.py"       
