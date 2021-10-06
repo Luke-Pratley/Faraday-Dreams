@@ -9,6 +9,14 @@ jobs:
         - python setup.py install
       script: pytest -v tests/*.py
 
+    - name: "pip release"
+      language: python
+      python:
+        - "3.8"
+      install:
+        - pip install pywavelets optimusprimal pytest pynufft faradaydreams
+      script: pytest -v tests/*.py
+
     - name: codecov
       language: python
       python:

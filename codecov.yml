@@ -1,0 +1,4 @@
+ignore:
+  - "examples/"
+  - "data/"
+  - "faradaydreams/models.py"         # glob accepted
