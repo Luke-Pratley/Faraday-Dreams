@@ -10,11 +10,11 @@ def power_method(m_op, tol=1e-4):
     return nu
 
 
-def create_faraday_matrix(lambda2, phi, lambda2_width, weights):
+def create_faraday_matrix(lambda2, phi, weights):
     A = np.zeros((len(lambda2), len(phi)), dtype=np.complex)
     for r in range(len(lambda2)):
         A[r, :] = np.exp(2 * lambda2[r] * phi * 1j) * \
-            np.sinc(phi * lambda2_width[r]/np.pi) * weights[r]
+            weights[r]
     return A
 
 
@@ -45,25 +45,30 @@ class faraday_operator:
         lambda2_width - channel widths in m^2
         spectral_axis - axis number for performing the calculation
         nufft - to use NUFFT algorithm over matrix operation
-
+        lambda2_channel_averaging_windows - pass a matrix where each row contains the RM sensitivity as a function of phi for the chosen channel
     """
+
     def __init__(self,
                  lambda2,
                  phi,
                  weights,
                  lambda2_width=None,
                  spectral_axis=-1,
-                 nufft=False):
+                 nufft=False,
+                 lambda2_channel_averaging_windows=None):
         self.spectral_axis = spectral_axis
         self.rows = len(lambda2)
         self.cols = len(phi)
-        if nufft == False:
-            if (np.all(lambda2_width != None)):
-                assert lambda2.shape == lambda2_width.shape
-            if (np.all(lambda2_width != None)):
-                A = create_faraday_matrix(lambda2, phi, lambda2_width, weights)
+        if (np.all(lambda2_width != None)):
+            assert lambda2.shape == lambda2_width.shape
+        if lambda2_channel_averaging_windows is None:
+            if lambda2_width is None:
+                lambda2_channel_averaging_windows = 1
             else:
-                A = create_faraday_matrix(lambda2, phi, lambda2 * 0., weights)
+                lambda2_channel_averaging_windows = np.sinc(
+                phi[np.newaxis, :] * lambda2_width[:, np.newaxis]/np.pi)
+        if nufft == False:
+            A = create_faraday_matrix(lambda2, phi, weights) * lambda2_channel_averaging_windows
             self.wrap_matrix(A)
         else:
             from pynufft import NUFFT
