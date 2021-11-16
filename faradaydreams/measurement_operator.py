@@ -47,7 +47,6 @@ class faraday_operator:
         nufft - to use NUFFT algorithm over matrix operation
         lambda2_channel_averaging_windows - pass a matrix where each row contains the RM sensitivity as a function of phi for the chosen channel
     """
-
     def __init__(self,
                  lambda2,
                  phi,
@@ -66,9 +65,10 @@ class faraday_operator:
                 lambda2_channel_averaging_windows = 1
             else:
                 lambda2_channel_averaging_windows = np.sinc(
-                phi[np.newaxis, :] * lambda2_width[:, np.newaxis]/np.pi)
+                    phi[np.newaxis, :] * lambda2_width[:, np.newaxis] / np.pi)
         if nufft == False:
-            A = create_faraday_matrix(lambda2, phi, weights) * lambda2_channel_averaging_windows
+            A = create_faraday_matrix(
+                lambda2, phi, weights) * lambda2_channel_averaging_windows
             self.wrap_matrix(A)
         else:
             from pynufft import NUFFT

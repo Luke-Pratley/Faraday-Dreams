@@ -3,12 +3,12 @@ import scipy.integrate as integrate
 
 
 def gaussian(phi, P, std, phi0, chi0):
-    return P * np.exp(-(phi0 - phi)**2/(2 * std**2) + 1j * 2 * chi0)
+    return P * np.exp(-(phi0 - phi)**2 / (2 * std**2) + 1j * 2 * chi0)
 
 
 def box(phi, P, width, phi0, chi0):
     model = np.zeros(phi.shape) * 1j
-    logic_expr = np.abs(phi0 - phi) <= width/2.
+    logic_expr = np.abs(phi0 - phi) <= width / 2.
     model[logic_expr] = np.exp(1j * 2 * chi0)
     return P * model
 
@@ -27,8 +27,18 @@ def deltas(phi, Ps, phi0s, chi0s):
 def from_analytic_lambda2(QUlambda2_function, phi, a, b):
     result = phi * 0j
     for i in range(len(phi)):
-        result[i] = integrate.quad(lambda lambda2: np.real(QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i])/(2 * np.pi)), a, b, limit=50)[
-            0] + 1j * integrate.quad(lambda lambda2: np.imag(QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i])/(2 * np.pi)), a, b, limit=50)[0]
+        result[i] = integrate.quad(
+            lambda lambda2: np.real(
+                QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i]) /
+                (2 * np.pi)),
+            a,
+            b,
+            limit=50)[0] + 1j * integrate.quad(lambda lambda2: np.imag(
+                QUlambda2_function(lambda2) * np.exp(-2j * lambda2 * phi[i]) /
+                (2 * np.pi)),
+                                               a,
+                                               b,
+                                               limit=50)[0]
 
     return result
 
